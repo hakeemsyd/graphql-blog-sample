@@ -16,19 +16,19 @@ const users = [{
 }];
 
 const posts = [{
-  id: 1,
+  id: '1',
   title: 'My awesome post',
   body: 'This is the body of my post',
   published: true,
   author: '1'
 }, {
-  id: 2,
+  id: '2',
   title: 'My awesome post 2',
   body: 'This is the body of my post',
   published: true,
   author: '1'
 }, {
-  id: 3,
+  id: '3',
   title: 'My awesome post 3',
   body: 'This is the body of my post',
   published: true,
@@ -52,7 +52,8 @@ const typeDefs = `
     id: ID!,
     name: String!,
     email: String!,
-    age: Int
+    age: Int,
+    posts: [Post!]!
   }
 
   type Post {
@@ -126,6 +127,13 @@ const resolvers = {
     author(parent, args, ctx, info) {
       return users.find((user) => {
         return user.id == parent.author;
+      });
+    }
+  },
+  User: {
+    posts(parent, args, ctx, info) {
+      return posts.filter((post) => {
+        return post.author === parent.id;
       });
     }
   }
