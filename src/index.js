@@ -19,17 +19,20 @@ const posts = [{
   id: 1,
   title: 'My awesome post',
   body: 'This is the body of my post',
-  published: true
+  published: true,
+  author: '1'
 }, {
   id: 2,
   title: 'My awesome post 2',
   body: 'This is the body of my post',
-  published: true
+  published: true,
+  author: '1'
 }, {
   id: 3,
   title: 'My awesome post 3',
   body: 'This is the body of my post',
-  published: true
+  published: true,
+  author: '2'
 }];
 
 // scalar -> Boolean, ID, String, Float, Int
@@ -57,6 +60,7 @@ const typeDefs = `
     title: String!,
     body: String!,
     published: Boolean!
+    author: User!
   }
 `
 
@@ -115,6 +119,13 @@ const resolvers = {
       }
       return posts.filter((post) => {
         return post.title.toLowerCase().includes(args.query);
+      });
+    }
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find((user) => {
+        return user.id == parent.author;
       });
     }
   }
