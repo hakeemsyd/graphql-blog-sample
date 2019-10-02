@@ -1,11 +1,45 @@
 import { GraphQLServer } from 'graphql-yoga'
 
+// Demo user data
+const users = [{
+  id: '1',
+  name: 'Hakeem',
+  email: 'hakeem@example.com'
+}, {
+  id: '2',
+  name: 'Sara',
+  email: 'sara@example.com'
+}, {
+  id: '3',
+  name: 'Mike',
+  email: 'mike@example.com'
+}];
+
+const posts = [{
+  id: 1,
+  title: 'My awesome post',
+  body: 'This is the body of my post',
+  published: true
+}, {
+  id: 2,
+  title: 'My awesome post 2',
+  body: 'This is the body of my post',
+  published: true
+}, {
+  id: 3,
+  title: 'My awesome post 3',
+  body: 'This is the body of my post',
+  published: true
+}];
+
 // scalar -> Boolean, ID, String, Float, Int
 // schema
 const typeDefs = `
   type Query {
+    users(query: String): [User!]!
     me: User!
     post: Post!
+    posts(query: String): [Post!]!
     greeting(name: String): String!
     add(numbers: [Float!]!): Float!
     grades: [Int!]!
@@ -65,6 +99,23 @@ const resolvers = {
     },
     grades(parent, args, ctx, info) {
       return [99, 80, 93];
+    },
+    users(parent, args, ctx, info) {
+      if (!args.query) {
+        return users;
+      }
+
+      return users.filter((user) => {
+        return user.name.toLowerCase().includes(args.query);
+      });
+    },
+    posts(parent, args, ctx, info) {
+      if (!args.query) {
+        return posts;
+      }
+      return posts.filter((post) => {
+        return post.title.toLowerCase().includes(args.query);
+      });
     }
   }
 }
