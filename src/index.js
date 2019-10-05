@@ -18,7 +18,7 @@ const users = [{
 
 const posts = [{
   id: '1',
-  title: 'My awesome post',
+  title: 'My awesome post with id 1',
   body: 'This is the body of my post',
   published: true,
   author: '1'
@@ -81,6 +81,8 @@ const typeDefs = `
 
   type Mutation {
     createUser(name: String!, email: String!, age: Int): User!
+    createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
+    createComment(text: String!, user: ID!, post: ID!): Comment!
   }
 
   type User {
@@ -179,7 +181,7 @@ const resolvers = {
       if (emailTaken) {
         throw new Error('Email already taken.');
       }
-      
+
       const user = {
         id: uuidv4(),
         name: args.name,
@@ -189,6 +191,48 @@ const resolvers = {
 
       users.push(user);
       return user;
+    },
+    createPost(parent, args, ctx, info) {
+      const userExists =  users.some((user) => {
+        return user.id === args.author;
+      });
+      if(!userExists) {
+        throw new Error('User not found');
+      }
+
+      const post = {
+        id: uuidv4(),
+        title: args.title,
+        body: args.body,
+        published: args.published,
+        author: args.author
+      }
+
+      posts.push(post);
+      return post;
+    },
+    createComment(parent, args, ctx, info) {
+      const userExists =  users.some((user) => {
+        return user.id === args.user;
+      });
+
+      const postExists = posts.some((post) => {
+        return args.post === post.id;
+      });
+
+      if (!userExists || !postExists) {
+        throw new Error('Either post or user does not exist');
+      }
+
+      const comment = {
+        id: uuidv4(),
+        text: args.text,
+        user: args.user,
+        post: args.post
+      }
+
+      comments.push(comment);
+      return comment;
     }
   },
   Post: {
