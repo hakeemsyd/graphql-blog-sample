@@ -194,7 +194,7 @@ const resolvers = {
   Mutation: {
     createUser(parent, args, ctx, info) {
       const emailTaken = users.some((user) => {
-        return user.email === args.email;
+        return user.email === args.data.email;
       });
 
       if (emailTaken) {
@@ -207,11 +207,12 @@ const resolvers = {
       };
 
       users.push(user);
+      console.log(users);
       return user;
     },
     createPost(parent, args, ctx, info) {
       const userExists =  users.some((user) => {
-        return user.id === args.author;
+        return user.id === args.data.author;
       });
       if(!userExists) {
         throw new Error('User not found');
@@ -227,11 +228,11 @@ const resolvers = {
     },
     createComment(parent, args, ctx, info) {
       const userExists =  users.some((user) => {
-        return user.id === args.user;
+        return user.id === args.data.user;
       });
 
       const postExists = posts.some((post) => {
-        return args.post === post.id;
+        return args.data.post === post.id;
       });
 
       if (!userExists || !postExists) {
