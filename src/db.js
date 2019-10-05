@@ -69,4 +69,4 @@ const db = {
   comments
 }
 
-export default db
+export {db as default}
