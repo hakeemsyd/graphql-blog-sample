@@ -6,17 +6,15 @@ import Mutation from './resolvers/Mutation'
 import Post from './resolvers/Post'
 import User from './resolvers/User'
 
-const resolvers = {
-  Query,
-  Mutation,
-  User,
-  Post,
-  Comment
-}
-
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
-  resolvers,
+  resolvers: {
+    Query,
+    Mutation,
+    User,
+    Post,
+    Comment
+  },
   context: {
     db
   }
