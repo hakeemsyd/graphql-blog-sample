@@ -98,11 +98,13 @@ const Mutation = {
     })
 
     const post = db.posts.splice(postIdx, 1)[0];
-    pubSub.publish('POSTS', { post: {
-        mutation: 'DELETED',
-        data: post
+    if (post.published) {
+      pubSub.publish('POSTS', { post: {
+          mutation: 'DELETED',
+          data: post
 
-    }})
+      }})
+    }
     return post;
   },
   updatePost(parent, {id, data}, {db, pubSub}, info) {
@@ -123,11 +125,13 @@ const Mutation = {
       post.published = data.published
     }
 
-    pubSub.publish('POSTS', { post: {
-        mutation: 'UPDATED',
-        data: post
+    if (post.published) {
+      pubSub.publish('POSTS', { post: {
+          mutation: 'UPDATED',
+          data: post
 
-    }})
+      }})
+    }
 
     return post
   },
